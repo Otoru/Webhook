@@ -1,3 +1,4 @@
+project_name: webhook
 before:
   hooks:
     - go mod tidy
@@ -5,6 +6,7 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
+    main: ./cmd
     goos:
       - linux
       - windows
