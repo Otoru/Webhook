@@ -26,6 +26,7 @@ func CreateRootCommand(out io.Writer) *cobra.Command {
 	}
 
 	cmd.AddCommand(
+		CreateVerifyCommand(out),
 		CreateVersionCommand(out),
 	)
 
