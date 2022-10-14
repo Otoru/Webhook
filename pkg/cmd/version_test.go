@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 	"strings"
 	"testing"
 
@@ -16,7 +16,7 @@ func TestCreateVersionCommand(t *testing.T) {
 
 		cmd.Execute()
 
-		result, err := ioutil.ReadAll(buffer)
+		result, err := io.ReadAll(buffer)
 		got := strings.TrimSpace(string(result))
 
 		if err != nil {
@@ -37,7 +37,7 @@ func TestCreateVersionCommand(t *testing.T) {
 
 		cmd.Execute()
 
-		result, err := ioutil.ReadAll(buffer)
+		result, err := io.ReadAll(buffer)
 		got := strings.TrimSpace(string(result))
 
 		if err != nil {

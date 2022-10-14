@@ -7,6 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"go.uber.org/dig"
 	"go.uber.org/fx"
 
 	"github.com/otoru/webhook/pkg/files"
@@ -40,7 +41,11 @@ func CreateVerifyCommand(out io.Writer) *cobra.Command {
 			)
 
 			ctx := context.Background()
-			return app.Start(ctx)
+			app.Start(ctx)
+
+			fmt.Println(dig.RootCause(app.Err()))
+
+			return app.Err()
 		},
 	}
 

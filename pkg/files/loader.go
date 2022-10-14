@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/otoru/webhook/pkg/errors"
 	"github.com/spf13/viper"
 )
 
@@ -13,12 +14,12 @@ func GetYamlFiles() ([]string, error) {
 	workdir := viper.GetString("workdir")
 
 	if _, err := os.Stat(workdir); err != nil {
-		return result, err
+		return result, errors.ErrInvalidWorkdir
 	}
 
 	handler := func(path string, spec os.DirEntry, err error) error {
 		if err != nil {
-			return err
+			return errors.ErrUnexpectedError
 		}
 
 		if !spec.IsDir() {

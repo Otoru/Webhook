@@ -4,6 +4,7 @@ import (
 	"io"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 const WebhookDescription = `
@@ -25,10 +26,17 @@ func CreateRootCommand(out io.Writer) *cobra.Command {
 		Long:  WebhookDescription,
 	}
 
+	flags := cmd.Flags()
+	flags.StringP("log-level", "l", "warn", "Set the application log-level")
+	viper.BindPFlag("log-level", flags.Lookup("log-level"))
+
 	cmd.AddCommand(
 		CreateVerifyCommand(out),
 		CreateVersionCommand(out),
 	)
+
+	cmd.SilenceErrors = true
+	cmd.SilenceUsage = true
 
 	return cmd
 }
