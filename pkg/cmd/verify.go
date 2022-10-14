@@ -33,19 +33,18 @@ func CreateVerifyCommand(out io.Writer) *cobra.Command {
 			app := fx.New(
 				fx.NopLogger,
 				fx.Provide(files.GetYamlFiles),
-				fx.Invoke(func(files []string) {
-					for _, file := range files {
-						fmt.Fprintln(out, file)
+				fx.Provide(files.GetDocuments),
+				fx.Invoke(func(documents []files.Document) {
+					for _, item := range documents {
+						fmt.Fprintln(out, item)
 					}
 				}),
 			)
 
 			ctx := context.Background()
-			app.Start(ctx)
+			err := app.Start(ctx)
 
-			fmt.Println(dig.RootCause(app.Err()))
-
-			return app.Err()
+			return dig.RootCause(err)
 		},
 	}
 

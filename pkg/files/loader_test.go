@@ -10,6 +10,27 @@ import (
 	"github.com/spf13/viper"
 )
 
+func TestGetDocuments(t *testing.T) {
+	t.Run("A blank file does not generate documents", func(t *testing.T) {
+		workdir := t.TempDir()
+		file, err := os.CreateTemp(workdir, "*.empty.yml")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		documents, err := GetDocuments([]string{file.Name()})
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if len(documents) != 0 {
+			t.Error("We expected an empty list here")
+		}
+	})
+}
+
 func TestGetYamlFiles(t *testing.T) {
 	t.Run("An invalid working directory throws an error", func(t *testing.T) {
 		viper.Set("workdir", "/an-invalid/directory")

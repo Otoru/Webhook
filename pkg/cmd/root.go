@@ -35,8 +35,5 @@ func CreateRootCommand(out io.Writer) *cobra.Command {
 		CreateVersionCommand(out),
 	)
 
-	cmd.SilenceErrors = true
-	cmd.SilenceUsage = true
-
 	return cmd
 }
