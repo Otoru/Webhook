@@ -1,0 +1,66 @@
+apiVersion: webhook/v1
+kind: Listener
+metadata:
+  name: example-listener
+  labels:
+    app: example
+    version: v1
+specs:
+  - name: public-listener
+    host: 0.0.0.0
+    port: 3000
+  - name: loopback-listener
+    host: 127.0.0.1
+    port: 8000
+---
+apiVersion: webhook/v1
+kind: Path
+metadata:
+  name: example-paths
+  labels:
+    app: example
+    version: v1
+specs:
+  - name: healthcheck-path
+    path: /health
+  - name: root-path
+    path: /
+---
+apiVersion: webhook/v1
+kind: Response
+metadata:
+  name: example-responses
+  labels:
+    app: example
+    version: v1
+specs:
+  - name: healthcheck-response
+    code: 200
+    headers:
+      - Content-type: application/json
+    body:
+      status: healthy
+      services:
+        network: healthy
+        database: healthy
+        cache: healthy
+  - name: root-response
+    code: 204
+---
+apiVersion: webhook/v1
+kind: Service
+metadata:
+  name: example-decision-tree
+  labels:
+    app: example
+    version: v1
+specs:
+  - name: example-api
+    listeners:
+      - public-listener
+      - loopback-listener
+    endpoints:
+      - path: healthcheck-path
+        response: healthcheck-response
+      - path: root-path
+        response: root-response
