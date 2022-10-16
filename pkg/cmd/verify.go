@@ -2,13 +2,14 @@ package cmd
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"io"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.uber.org/dig"
 	"go.uber.org/fx"
+	"go.uber.org/multierr"
 
 	"github.com/otoru/webhook/pkg/files"
 )
@@ -34,10 +35,17 @@ func CreateVerifyCommand(out io.Writer) *cobra.Command {
 				fx.NopLogger,
 				fx.Provide(files.GetYamlFiles),
 				fx.Provide(files.GetDocuments),
-				fx.Invoke(func(documents []files.Document) {
-					for _, item := range documents {
-						fmt.Fprintln(out, item)
+				fx.Provide(files.GetSpecifications),
+				fx.Invoke(func(specs []*files.Specification) error {
+					var result error
+
+					for _, item := range specs {
+						result = multierr.Append(result, item.Validate())
 					}
+
+					result = multierr.Append(result, errors.New("Teste"))
+
+					return result
 				}),
 			)
 
@@ -48,10 +56,14 @@ func CreateVerifyCommand(out io.Writer) *cobra.Command {
 		},
 	}
 
+	cmd.SilenceUsage = true
+
 	flags := cmd.Flags()
 
 	flags.StringP("workdir", "w", "specs/", "Specifies the working directory to use")
+	flags.Bool("short", false, "Print only the version number")
 	viper.BindPFlag("workdir", flags.Lookup("workdir"))
+	viper.BindPFlag("short", flags.Lookup("short"))
 
 	return cmd
 }

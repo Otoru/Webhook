@@ -12,14 +12,27 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Document struct {
-	Path string
-	Raw  []byte
+// GetSpecifications turns a list of documents into specifications
+func GetSpecifications(documents []*Document) ([]*Specification, error) {
+	result := make([]*Specification, 0)
+
+	for _, document := range documents {
+		spec := new(Specification)
+		spec.Path = document.Path
+
+		if err := yaml.Unmarshal(document.Raw, spec); err != nil {
+			return result, err
+		}
+
+		result = append(result, spec)
+	}
+
+	return result, nil
 }
 
 // GetDocuments splits received yaml's into a list of documents
-func GetDocuments(files []string) ([]Document, error) {
-	result := make([]Document, 0)
+func GetDocuments(files []string) ([]*Document, error) {
+	result := make([]*Document, 0)
 
 	for _, file := range files {
 		content, err := os.ReadFile(file)
@@ -50,7 +63,7 @@ func GetDocuments(files []string) ([]Document, error) {
 			}
 
 			instance := &Document{Path: file, Raw: raw}
-			result = append(result, *instance)
+			result = append(result, instance)
 		}
 	}
 
