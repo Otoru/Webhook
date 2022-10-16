@@ -1,6 +1,8 @@
 # What is Webhook?
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/otoru/webhook)](https://goreportcard.com/report/github.com/otoru/webhook)
+[![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/otoru/webhook.svg)](https://github.com/otoru/webhook)
+[![GoDoc reference example](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/otoru/webhook)
 
 Webhook is a command line tool for simple implementation of APIs.
 
