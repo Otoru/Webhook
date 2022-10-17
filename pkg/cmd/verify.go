@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"io"
 
 	"github.com/spf13/cobra"
@@ -26,10 +26,11 @@ such as two listeners disputing the same connection port.
 
 func CreateVerifyCommand(out io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "verify",
-		Short: "Check if the working directory entered has valid files",
-		Long:  verifyDescription,
-		Args:  cobra.NoArgs,
+		Use:          "verify",
+		Short:        "Check if the working directory entered has valid files",
+		Long:         verifyDescription,
+		Args:         cobra.NoArgs,
+		SilenceUsage: false,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			app := fx.New(
 				fx.NopLogger,
@@ -43,7 +44,9 @@ func CreateVerifyCommand(out io.Writer) *cobra.Command {
 						result = multierr.Append(result, item.Validate())
 					}
 
-					result = multierr.Append(result, errors.New("Teste"))
+					if result == nil {
+						fmt.Fprintln(out, "✨ Everything is ok!")
+					}
 
 					return result
 				}),
@@ -55,8 +58,6 @@ func CreateVerifyCommand(out io.Writer) *cobra.Command {
 			return dig.RootCause(err)
 		},
 	}
-
-	cmd.SilenceUsage = true
 
 	flags := cmd.Flags()
 
