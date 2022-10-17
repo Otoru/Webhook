@@ -1,29 +1,31 @@
 package files
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 
+	jsoniter "github.com/json-iterator/go"
 	"github.com/otoru/webhook/internal/tools"
 	v1 "github.com/otoru/webhook/pkg/providers/v1"
 )
 
 type Metadata struct {
-	Name        string            `json:"name"`
-	Description string            `json:"description,omitempty"`
-	Labels      map[string]string `json:"labels,omitempty"`
+	Name        string            `yaml:"name"`
+	Description string            `yaml:"description,omitempty"`
+	Labels      map[string]string `yaml:"labels,omitempty"`
 }
 
 type Specification struct {
-	Path       string                   `json:"path,omitempty"`
-	ApiVersion string                   `json:"apiVersion"`
-	Kind       string                   `json:"kind"`
-	Metadata   Metadata                 `json:"metadata"`
-	Specs      []map[string]interface{} `json:"specs"`
+	Path       string                   `yaml:"path,omitempty"`
+	ApiVersion string                   `yaml:"apiVersion"`
+	Kind       string                   `yaml:"kind"`
+	Metadata   Metadata                 `yaml:"metadata"`
+	Specs      []map[string]interface{} `yaml:"specs"`
 }
 
 func validateMapWithStruct(item map[string]interface{}, instance v1.Validator) error {
+	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 	payload, err := json.Marshal(item)
 
 	if err != nil {
