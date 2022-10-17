@@ -4,7 +4,6 @@ import (
 	"io"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 const WebhookDescription = `
@@ -21,18 +20,14 @@ All configuration is performed through the template files present in the workdir
 
 func CreateRootCommand(out io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "webhook",
-		Short: "Command line tool for simple implementation of webhooks",
-		Long:  WebhookDescription,
+		Use:     "webhook",
+		Short:   "Command line tool for simple implementation of webhooks",
+		Long:    WebhookDescription,
+		Version: "v0.1.0",
 	}
-
-	flags := cmd.Flags()
-	flags.StringP("log-level", "l", "warn", "Set the application log-level")
-	viper.BindPFlag("log-level", flags.Lookup("log-level"))
 
 	cmd.AddCommand(
 		CreateVerifyCommand(out),
-		CreateVersionCommand(out),
 	)
 
 	return cmd
